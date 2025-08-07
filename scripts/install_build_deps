@@ -1,0 +1,10 @@
+#!/bin/sh
+
+dnf -y update
+dnf -y install git rpmdevtools gettext
+
+if [ -n "$INPUT_EXTRA_BUILD_DEPS" ]; then
+  dnf -y install "$INPUT_EXTRA_BUILD_DEPS"
+fi
+
+dnf builddep -y --spec "$INPUT_SPEC_FILE"

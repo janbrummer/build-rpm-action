@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -eu
+
+
+cd -- "$INPUT_SOURCE_DIR"
+
+name=$(grep Name: "$INPUT_SPEC_FILE"  | awk '{print $2}')
+version=$(grep Version: "$INPUT_SPEC_FILE"  | awk '{print $2}')
+
+mkdir -p /home/runner/rpmbuild/SOURCES/
+mkdir -p /home/runner/rpmbuild/SPECS/
+
+git config tar.tar.xz.command "xz -c"
+git archive --output=/home/runner/rpmbuild/SOURCES/"${name}"-"${version}".tar.xz --format tar.xz --prefix="${name}"-"${version}"/ HEAD
+ls -lsa /home/runner/rpmbuild/SOURCES/
+file /home/runner/rpmbuild/SOURCES/"${name}"-"${version}".tar.xz
+
+rpmbuild -ba "$INPUT_SPEC_FILE"
