@@ -14,6 +14,10 @@ inputs:
   extra-build-deps:
     description: Extra packages to be installed as build dependencies
     required: false
+  setup-hook:
+    description: Shell command(s) to execute after setting-up the build
+      environment and before installing build dependencies
+    required: false
   source-dir:
     default: ./
     description: Path relative to $GITHUB_WORKSPACE that contains the package sources
