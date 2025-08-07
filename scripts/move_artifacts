@@ -1,0 +1,4 @@
+#!/bin/sh
+
+mkdir -p "$INPUT_ARTIFACTS_DIR"
+mv /home/runner/rpmbuild/RPMS/* "$INPUT_ARTIFACTS_DIR"

@@ -1,0 +1,53 @@
+name: Build RPM packages
+description: Build RPM packages with rpmbuild in a flexible environment.
+author: Jan-Michael Brummer
+
+inputs:
+  artifacts-dir:
+    default: rpm/artifacts
+    description: Directory path relative to $GITHUB_WORKSPACE to place the built packages in
+    required: true
+  docker-image:
+    default: fedora:latest
+    description: Name of a Docker image or path of a Dockerfile to use for the build container
+    required: true
+  extra-build-deps:
+    description: Extra packages to be installed as build dependencies
+    required: false
+  source-dir:
+    default: ./
+    description: Path relative to $GITHUB_WORKSPACE that contains the package sources
+    required: true
+  spec-file:
+    default: '*.spec'
+    description: RPM spec file name
+    required: true
+
+outputs:
+  artifacts:
+    description: Newline-separated list of artifacts; the list contains their paths relative to the workspace
+    value: ${{ steps.run.outputs.ARTIFACTS }}
+
+runs:
+  using: composite
+  steps:
+    - env:
+        # Manually setting INPUT_* variables here until
+        # https://github.com/actions/runner/issues/665 is resolved:#
+        INPUT_ARTIFACTS_DIR: ${{ inputs.artifacts-dir }}
+        INPUT_DOCKER_IMAGE: ${{ inputs.docker-image }}
+        INPUT_EXTRA_BUILD_DEPS: ${{ inputs.extra-build-deps }}
+        INPUT_SOURCE_DIR: ${{ inputs.source-dir }}
+        INPUT_SPEC_FILE: ${{ inputs.spec-file }}
+      id: run
+      run: ${{ github.action_path }}/scripts/run
+      shell: bash
+    - env:
+        BUILD_DIR: ${{ steps.run.outputs.build-dir }}
+      if: ${{ always() && steps.run.outputs.build-dir != '' }}
+      run: ${{ github.action_path }}/scripts/post
+      shell: bash
+
+branding:
+  color: blue
+  icon: package

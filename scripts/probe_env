@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -eu
+
+test -f /etc/redhat-release
+command -v dnf >/dev/null
