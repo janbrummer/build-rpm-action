@@ -67,6 +67,7 @@ start_group "Starting build container"
 # Docker does not like variable values containing newlines in an --env-file, we
 # will pass them separately:
 env \
+    --unset=INPUT_SETUP_HOOK \
     >"$env_file"
 
 container_id_file=${build_dir}/container_id
