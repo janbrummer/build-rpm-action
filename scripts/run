@@ -114,6 +114,12 @@ in_container install \
     /etc/gitconfig
 end_group
 
+if [ -n "$INPUT_SETUP_HOOK" ]; then
+	start_group "Executing setup hook"
+	in_container /bin/sh -c "$INPUT_SETUP_HOOK"
+	end_group
+fi
+
 start_group "Installing build dependencies"
 in_container /github/action/scripts/install_build_deps
 end_group
